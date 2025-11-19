@@ -48,3 +48,47 @@ Pré-requisitos: Python instalado.
 ```bash
 git clone [https://github.com/seu-usuario/gestao-estoque.git](https://github.com/seu-usuario/gestao-estoque.git)
 cd gestao-estoque
+
+2. Crie e ative um Ambiente Virtual (Windows)
+PowerShell
+
+python -m venv venv
+.\venv\Scripts\activate
+3. Instale as dependências
+Bash
+
+pip install django
+# Ou se tiver o requirements.txt:
+# pip install -r requirements.txt
+4. Configure o Banco de Dados
+Bash
+
+python manage.py makemigrations
+python manage.py migrate
+5. Crie um Superusuário (Admin)
+Para acessar o sistema, você precisa criar o primeiro login:
+
+Bash
+
+python manage.py createsuperuser
+# Siga as instruções na tela (usuário, email e senha)
+6. Inicie o Servidor
+Bash
+
+python manage.py runserver
+Acesse no navegador: http://127.0.0.1:8000/
+
+📂 Estrutura do Projeto
+gestao-estoque/
+├── estoque/            # App Principal
+│   ├── migrations/     # Histórico do Banco de Dados
+│   ├── templates/      # Arquivos HTML (Dashboard, Forms)
+│   ├── admin.py        # Configuração do Painel Admin
+│   ├── models.py       # Estrutura do Banco de Dados
+│   ├── views.py        # Lógica do Sistema (Regras de Negócio)
+│   └── forms.py        # Formulários
+├── setup/              # Configurações do Projeto Django
+│   ├── settings.py     # Configurações Globais
+│   └── urls.py         # Rotas e Links
+├── db.sqlite3          # Banco de Dados
+└── manage.py           # Gerenciador de Comandos
