@@ -9,8 +9,8 @@ Um sistema web completo para controle de estoque de pequenas empresas, focado em
 
 ## 📸 Screenshots
 
-<img width="1919" height="988" alt="Screenshot_2" src="https://github.com/user-attachments/assets/92a0b900-2868-444e-9d10-acea74bbd089" />
-<img width="1918" height="914" alt="Screenshot_1" src="https://github.com/user-attachments/assets/fe665afe-558d-44a8-83a0-bb58026b801e" />
+<img width="1916" height="911" alt="Screenshot_2" src="https://github.com/user-attachments/assets/90718559-3284-4e63-9161-78a6f7e8873a" />
+<img width="1919" height="868" alt="Screenshot_1" src="https://github.com/user-attachments/assets/f9164b5a-5318-441a-a416-240165f22de0" />
 
 
 ## 🚀 Funcionalidades
