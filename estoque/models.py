@@ -1,11 +1,13 @@
 from django.db import models
-
-from django.db import models
 from django.contrib.auth.models import User
 
 
 class Categoria(models.Model):
     nome = models.CharField(max_length=50, unique=True)
+
+    class Meta:
+        verbose_name = "Categoria"
+        verbose_name_plural = "Categorias"
 
     def __str__(self):
         return self.nome
@@ -20,6 +22,12 @@ class Produto(models.Model):
     preco_venda = models.DecimalField(max_digits=10, decimal_places=2)
     criado_em = models.DateTimeField(auto_now_add=True)
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    imagem = models.ImageField(upload_to='produtos/', null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Produto"
+        verbose_name_plural = "Produtos"
+        ordering = ['nome']
 
     def __str__(self):
         return self.nome
@@ -57,8 +65,13 @@ class Movimentacao(models.Model):
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
     quantidade = models.IntegerField()
     tipo = models.CharField(max_length=1, choices=TIPO_CHOICES)
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE)  # Quem fez?
-    data = models.DateTimeField(auto_now_add=True)  # Quando?
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    data = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Movimentação"
+        verbose_name_plural = "Movimentações"
+        ordering = ['-data']
 
     def __str__(self):
         return f"{self.get_tipo_display()} - {self.produto.nome} ({self.quantidade})"

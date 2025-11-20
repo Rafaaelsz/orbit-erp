@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Movimentar Estoque</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+
+    <div class="container mx-auto mt-10 max-w-md">
+        <div class="bg-white shadow-lg rounded-lg p-8">
+            
+            <div class="text-center mb-6">
+                <h2 class="text-xl font-bold text-gray-800">Movimentação de Estoque</h2>
+                <p class="text-gray-500 font-bold text-lg">{{ produto.nome }}</p>
+                <p class="text-sm text-gray-400 mt-1">Saldo Atual: {{ produto.quantidade }} unidades</p>
+            </div>
+
+            {% if erro %}
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+                {{ erro }}
+            </div>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Tipo de Movimento</label>
+                    {{ form.tipo }}
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Quantidade</label>
+                    {{ form.quantidade }}
+                </div>
+
+                <div class="flex gap-2 mt-4">
+                    <a href="{% url 'dashboard' %}" class="w-1/2 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-3 rounded text-center transition duration-300">
+                        Cancelar
+                    </a>
+                    <button type="submit" class="w-1/2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded transition duration-300">
+                        Confirmar
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+</body>
+</html>

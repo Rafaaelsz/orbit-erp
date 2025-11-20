@@ -21,12 +21,22 @@ def dashboard(request):
         total=Sum(F('quantidade') * F('preco_venda'))
     )['total'] or 0
 
+    por_categoria = produtos.values(
+        'categoria__nome').annotate(total=Sum('quantidade'))
+
+    cat_labels = [item['categoria__nome']
+                  for item in por_categoria if item['categoria__nome']]
+    cat_data = [item['total']
+                for item in por_categoria if item['categoria__nome']]
+
     context = {
         'produtos': produtos,
         'total_produtos': total_produtos,
         'total_itens': total_itens,
         'valor_estoque': valor_estoque,
-        'query': query if query else ''
+        'query': query if query else '',
+        'cat_labels': cat_labels,
+        'cat_data': cat_data,
     }
     return render(request, 'estoque/dashboard.html', context)
 
@@ -34,7 +44,7 @@ def dashboard(request):
 @login_required
 def adicionar_produto(request):
     if request.method == 'POST':
-        form = ProdutoForm(request.POST)
+        form = ProdutoForm(request.POST, request.FILES)
         if form.is_valid():
             produto = form.save(commit=False)
             produto.usuario = request.user
@@ -49,7 +59,7 @@ def adicionar_produto(request):
 def editar_produto(request, id):
     produto = get_object_or_404(Produto, id=id)
     if request.method == 'POST':
-        form = ProdutoForm(request.POST, instance=produto)
+        form = ProdutoForm(request.POST, request.FILES, instance=produto)
         if form.is_valid():
             form.save()
             return redirect('dashboard')
@@ -106,3 +116,9 @@ def historico_produto(request, id):
         'produto': produto,
         'movimentacoes': movimentacoes
     })
+
+
+@login_required
+def detalhes_produto(request, id):
+    produto = get_object_or_404(Produto, id=id)
+    return render(request, 'estoque/detalhes_produto.html', {'produto': produto})
