@@ -1,39 +1,43 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>Novo Produto</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100">
+{% extends 'estoque/base.html' %}
 
-    <div class="container mx-auto mt-10 max-w-lg">
-        <div class="bg-white shadow-lg rounded-lg p-8">
-            
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold text-gray-800">Cadastrar Produto</h2>
-                <a href="{% url 'dashboard' %}" class="text-blue-500 hover:text-blue-700 text-sm">Voltar</a>
-            </div>
+{% block header %}
+    {% if form.instance.pk %}Editar Produto{% else %}Novo Produto{% endif %}
+{% endblock %}
 
-            <form method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                
-                {% for field in form %}
-                <div class="mb-2">
-                    <label class="block text-gray-700 text-sm font-bold mb-2">
-                        {{ field.label }}
-                    </label>
-                    {{ field }}
-                </div>
-                {% endfor %}
-
-                <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded transition duration-300 mt-4">
-                    Salvar Produto
-                </button>
-            </form>
-
-        </div>
+{% block content %}
+<div class="max-w-2xl mx-auto bg-white shadow-lg rounded-lg p-8">
+    
+    <div class="flex justify-between items-center mb-6 border-b pb-4">
+        <h2 class="text-2xl font-bold text-gray-800">Preencha os dados</h2>
+        <a href="{% url 'dashboard' %}" class="text-gray-500 hover:text-blue-600 text-sm flex items-center gap-1">
+            <i class="fas fa-arrow-left"></i> Voltar
+        </a>
     </div>
 
-</body>
-</html>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div class="grid grid-cols-1 gap-4">
+            <!-- Loop para renderizar campos com estilo -->
+            {% for field in form %}
+            <div>
+                <label class="block text-gray-700 text-sm font-bold mb-2">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}
+                <p class="text-gray-500 text-xs italic">{{ field.help_text }}</p>
+                {% endif %}
+                {% for error in field.errors %}
+                <p class="text-red-500 text-xs italic">{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="mt-8">
+            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition shadow-md flex items-center justify-center gap-2">
+                <i class="fas fa-save"></i> Salvar Produto
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

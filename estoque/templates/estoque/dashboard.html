@@ -5,200 +5,221 @@
     <title>Gestão de Estoque</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-gray-100 font-sans leading-normal tracking-normal">
+<body class="bg-gray-100 font-sans antialiased">
 
-   <nav class="flex items-center justify-between flex-wrap bg-gray-800 p-6">
-        <div class="flex items-center flex-shrink-0 text-white mr-6">
-            <span class="font-semibold text-xl tracking-tight">📦 Sistema de Estoque</span>
-        </div>
-        <div class="flex items-center text-white">
-            <span class="mr-4 text-sm text-gray-300">Olá, {{ user.username }}</span>
+    <div class="flex h-screen overflow-hidden">
+
+        <aside class="w-64 bg-gray-900 text-white flex flex-col shadow-2xl">
             
-            <form action="{% url 'logout' %}" method="post">
-                {% csrf_token %}
-                <button type="submit" class="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-gray-800 hover:bg-white mt-4 lg:mt-0 transition duration-300">
-                    Sair
-                </button>
-            </form>
-        </div>
-    </nav>
-
-    <div class="container mx-auto px-4 mt-8">
-        
-        <!-- CARDS SUPERIORES -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div class="bg-blue-500 rounded-lg shadow-lg p-6 text-white">
-                <h3 class="text-lg font-bold mb-2">Tipos de Produtos</h3>
-                <p class="text-4xl font-bold">{{ total_produtos }}</p>
+            <div class="h-16 flex items-center justify-center bg-blue-600 font-bold text-xl shadow-md">
+                <i class="fas fa-box-open mr-2"></i> Meu Estoque
             </div>
 
-            <div class="bg-green-500 rounded-lg shadow-lg p-6 text-white">
-                <h3 class="text-lg font-bold mb-2">Peças em Estoque</h3>
-                <p class="text-4xl font-bold">{{ total_itens }}</p>
-            </div>
-
-            <div class="bg-yellow-500 rounded-lg shadow-lg p-6 text-white">
-                <h3 class="text-lg font-bold mb-2">Valor Total</h3>
-                <p class="text-4xl font-bold">R$ {{ valor_estoque }}</p>
-            </div>
-        </div>
-
-        <!-- ÁREA DE GRÁFICOS -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            
-            <!-- Gráfico de Pizza -->
-            <div class="bg-white rounded-lg shadow-lg p-6">
-                <h3 class="text-gray-700 text-lg font-bold mb-4">Distribuição por Categoria</h3>
-                <div class="relative h-64">
-                    <canvas id="chartCategoria"></canvas>
+            <div class="p-6 border-b border-gray-800 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-lg font-bold text-blue-400">
+                    {{ user.username|slice:":1"|upper }}
+                </div>
+                <div>
+                    <p class="text-sm font-semibold">{{ user.username }}</p>
+                    <p class="text-xs text-gray-400">Administrador</p>
                 </div>
             </div>
 
-            <!-- Resumo -->
-            <div class="bg-white rounded-lg shadow-lg p-6 flex flex-col justify-center items-center text-center">
-                <h3 class="text-gray-700 text-lg font-bold mb-2">Resumo Rápido</h3>
-                <p class="text-gray-500">Seu estoque possui <strong class="text-blue-600">{{ total_produtos }}</strong> produtos cadastrados.</p>
-                <p class="text-gray-500 mt-2">O valor total acumulado é de:</p>
-                <p class="text-3xl font-bold text-green-600 mt-1">R$ {{ valor_estoque }}</p>
-            </div>
-
-        </div>
-
-       <!-- BARRA DE BUSCA E BOTÃO NOVO -->
-       <div class="flex flex-col md:flex-row justify-between items-center mb-6 mt-8 gap-4">
-            <h3 class="text-xl font-bold text-gray-700">Listagem de Produtos</h3>
-            
-            <div class="flex gap-2 w-full md:w-auto">
-                <form method="get" class="flex gap-2 w-full md:w-auto">
-                    <input type="text" 
-                           name="q" 
-                           value="{{ query }}"
-                           placeholder="Buscar por nome..." 
-                           class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 w-full md:w-64">
-                    
-                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
-                        🔍
-                    </button>
-                    
-                    {% if query %}
-                    <a href="{% url 'dashboard' %}" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded flex items-center">
-                        X
-                    </a>
-                    {% endif %}
-                </form>
-
-                <a href="{% url 'adicionar_produto' %}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded whitespace-nowrap">
-                    + Novo
+            <nav class="flex-1 p-4 space-y-2">
+                <a href="{% url 'dashboard' %}" class="block py-2.5 px-4 rounded transition duration-200 bg-gray-800 text-blue-400 border-l-4 border-blue-400">
+                    <i class="fas fa-tachometer-alt mr-2 w-6"></i> Dashboard
                 </a>
+                
+                <a href="#" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-800 hover:text-white text-gray-400">
+                    <i class="fas fa-exchange-alt mr-2 w-6"></i> Movimentações
+                </a>
+
+                <a href="/admin" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-800 hover:text-white text-gray-400">
+                    <i class="fas fa-cogs mr-2 w-6"></i> Área Admin
+                </a>
+            </nav>
+
+            <div class="p-4 border-t border-gray-800">
+                <form action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="w-full py-2 px-4 bg-red-600 hover:bg-red-700 rounded text-white text-sm transition font-bold flex items-center justify-center gap-2">
+                        <i class="fas fa-sign-out-alt"></i> Sair do Sistema
+                    </button>
+                </form>
             </div>
-        </div>
+        </aside>
 
-        <!-- TABELA DE PRODUTOS -->
-        <div class="bg-white shadow-md rounded my-6 overflow-x-auto">
+        <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
+            
+            <header class="bg-white shadow-sm h-16 flex items-center justify-between px-6">
+                <h2 class="text-xl font-bold text-gray-700">Visão Geral</h2>
+                <div class="text-sm text-gray-500">
+                    <i class="far fa-calendar-alt mr-1"></i> {% now "d/m/Y" %}
+                </div>
+            </header>
 
-            <table class="min-w-full table-auto">
-                <thead>
-                    <tr class="bg-gray-800 text-white uppercase text-sm leading-normal">
-                        <!-- NOVA COLUNA FOTO AQUI -->
-                        <th class="py-3 px-6 text-left">Foto</th>
-                        <th class="py-3 px-6 text-left">Status</th>
-                        <th class="py-3 px-6 text-left">Produto</th>
-                        <th class="py-3 px-6 text-center">Qtd</th>
-                        <th class="py-3 px-6 text-center">Custo</th>
-                        <th class="py-3 px-6 text-center">Venda</th>
-                        <th class="py-3 px-6 text-center">Lucro</th>
-                        <th class="py-3 px-6 text-center">Ações</th>
-                    </tr>
-                </thead>
-                <tbody class="text-gray-700 text-sm">
-                    {% for produto in produtos %}
-                    <tr class="border-b border-gray-200 hover:bg-gray-50 transition duration-150">
-                        
-                        <!-- LÓGICA DA FOTO AQUI -->
-                        <td class="py-3 px-6 text-left">
-                            <a href="{% url 'detalhes_produto' produto.id %}" class="block w-10 h-10 cursor-pointer hover:opacity-80 transition" title="Ver Detalhes">
-                                
-                                {% if produto.imagem %}
-                                    <img src="{{ produto.imagem.url }}" class="w-10 h-10 rounded-full object-cover border border-gray-300 shadow-sm">
-                                {% else %}
-                                    <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-xs border border-gray-300">
-                                        📷
-                                    </div>
-                                {% endif %}
-                                
+            <div class="container mx-auto px-6 py-8">
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-white rounded-lg shadow p-6 border-l-4 border-blue-500">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="text-sm text-gray-500 uppercase font-bold">Produtos</p>
+                                <p class="text-3xl font-bold text-gray-800">{{ total_produtos }}</p>
+                            </div>
+                            <div class="text-blue-500 text-4xl opacity-30">
+                                <i class="fas fa-boxes"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow p-6 border-l-4 border-green-500">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="text-sm text-gray-500 uppercase font-bold">Estoque Total</p>
+                                <p class="text-3xl font-bold text-gray-800">{{ total_itens }}</p>
+                            </div>
+                            <div class="text-green-500 text-4xl opacity-30">
+                                <i class="fas fa-cubes"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow p-6 border-l-4 border-yellow-500">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="text-sm text-gray-500 uppercase font-bold">Valor Patrimônio</p>
+                                <p class="text-3xl font-bold text-gray-800">R$ {{ valor_estoque }}</p>
+                            </div>
+                            <div class="text-yellow-500 text-4xl opacity-30">
+                                <i class="fas fa-money-bill-wave"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h3 class="text-gray-700 text-lg font-bold mb-4 border-b pb-2">Distribuição por Categoria</h3>
+                        <div class="relative h-64">
+                            <canvas id="chartCategoria"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow p-6 flex flex-col justify-center items-center text-center">
+                        <h3 class="text-gray-700 text-lg font-bold mb-2">Status do Sistema</h3>
+                        <p class="text-gray-500">Seu estoque possui <strong class="text-blue-600">{{ total_produtos }}</strong> produtos.</p>
+                        <p class="text-gray-500 mt-2">Valor total acumulado:</p>
+                        <p class="text-4xl font-bold text-green-600 mt-2">R$ {{ valor_estoque }}</p>
+                        <button class="mt-6 px-6 py-2 bg-gray-800 text-white rounded hover:bg-gray-700 transition">
+                            Gerar Relatório
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row justify-between items-center mb-6 mt-8 gap-4">
+                    <h3 class="text-xl font-bold text-gray-700 flex items-center gap-2">
+                        <i class="fas fa-list"></i> Listagem de Produtos
+                    </h3>
+                    
+                    <div class="flex gap-2 w-full md:w-auto">
+                        <form method="get" class="flex gap-2 w-full md:w-auto">
+                            <div class="relative w-full md:w-64">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                                    <i class="fas fa-search text-gray-400"></i>
+                                </span>
+                                <input type="text" name="q" value="{{ query }}" placeholder="Buscar produto..." 
+                                       class="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm">
+                            </div>
+                            
+                            <button type="submit" class="bg-gray-800 hover:bg-gray-900 text-white px-4 py-2 rounded-lg">
+                                Buscar
+                            </button>
+                            
+                            {% if query %}
+                            <a href="{% url 'dashboard' %}" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg flex items-center">
+                                <i class="fas fa-times"></i>
                             </a>
-                        </td>
+                            {% endif %}
+                        </form>
 
-                        <td class="py-3 px-6 text-left">
-                            <span class="{{ produto.status_estoque.classe }} py-1 px-3 rounded-full text-xs font-bold border shadow-sm">
-                                {{ produto.status_estoque.texto }}
-                            </span>
-                        </td>
+                        <a href="{% url 'adicionar_produto' %}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg whitespace-nowrap flex items-center gap-2">
+                            <i class="fas fa-plus"></i> Novo
+                        </a>
+                    </div>
+                </div>
 
-                        <td class="py-3 px-6 text-left font-medium text-gray-900">{{ produto.nome }}</td>
-                        
-                        <td class="py-3 px-6 text-center font-bold {% if produto.quantidade < 5 %}text-red-600{% endif %}">
-                            {{ produto.quantidade }}
-                        </td>
-
-                        <td class="py-3 px-6 text-center text-gray-500">R$ {{ produto.preco_custo }}</td>
-                        <td class="py-3 px-6 text-center text-blue-600 font-bold">R$ {{ produto.preco_venda }}</td>
-                        
-                        <td class="py-3 px-6 text-center">
-                            <div class="flex flex-col">
-                                <span class="text-green-600 font-bold">R$ {{ produto.lucro }}</span>
-                                <span class="text-xs text-gray-400">({{ produto.margem }}%)</span>
-                            </div>
-                        </td>
-
-                        <td class="py-3 px-6 text-center">
-                            <div class="flex item-center justify-center gap-2">
-                                
-                                <!-- Botão Movimentar -->
-                                <a href="{% url 'movimentar_produto' produto.id %}" class="text-blue-500 hover:text-blue-600 transform hover:scale-110" title="Entrada/Saída">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
-                                    </svg>
-                                </a>
-
-                                <!-- Botão Histórico -->
-                                <a href="{% url 'historico_produto' produto.id %}" class="text-purple-500 hover:text-purple-600 transform hover:scale-110" title="Ver Histórico">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                </a>
-
-                                <!-- Botão Editar -->
-                                <a href="{% url 'editar_produto' produto.id %}" class="text-yellow-500 hover:text-yellow-600 transform hover:scale-110" title="Editar">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                                    </svg>
-                                </a>
-
-                                <!-- Botão Excluir -->
-                                <a href="{% url 'deletar_produto' produto.id %}" onclick="return confirm('Excluir {{ produto.nome }}?')" class="text-red-500 hover:text-red-600 transform hover:scale-110" title="Excluir">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                                    </svg>
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="8" class="text-center py-4 text-gray-500">Nenhum produto encontrado.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
+                <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                    <table class="min-w-full table-auto">
+                        <thead>
+                            <tr class="bg-gray-800 text-white text-sm uppercase leading-normal">
+                                <th class="py-3 px-6 text-left">Foto</th>
+                                <th class="py-3 px-6 text-left">Status</th>
+                                <th class="py-3 px-6 text-left">Produto</th>
+                                <th class="py-3 px-6 text-center">Qtd</th>
+                                <th class="py-3 px-6 text-center">Custo</th>
+                                <th class="py-3 px-6 text-center">Venda</th>
+                                <th class="py-3 px-6 text-center">Lucro</th>
+                                <th class="py-3 px-6 text-center">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-gray-700 text-sm">
+                            {% for produto in produtos %}
+                            <tr class="border-b border-gray-200 hover:bg-gray-50 transition duration-150">
+                                <td class="py-3 px-6 text-left">
+                                    <a href="{% url 'detalhes_produto' produto.id %}" class="block w-10 h-10 cursor-pointer hover:opacity-80 transition">
+                                        {% if produto.imagem %}
+                                            <img src="{{ produto.imagem.url }}" class="w-10 h-10 rounded-full object-cover border border-gray-300 shadow-sm">
+                                        {% else %}
+                                            <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-xs border border-gray-300">
+                                                <i class="fas fa-camera"></i>
+                                            </div>
+                                        {% endif %}
+                                    </a>
+                                </td>
+                                <td class="py-3 px-6 text-left">
+                                    <span class="{{ produto.status_estoque.classe }} py-1 px-3 rounded-full text-xs font-bold border shadow-sm">
+                                        {{ produto.status_estoque.texto }}
+                                    </span>
+                                </td>
+                                <td class="py-3 px-6 text-left font-medium text-gray-900">{{ produto.nome }}</td>
+                                <td class="py-3 px-6 text-center font-bold {% if produto.quantidade < 5 %}text-red-600{% endif %}">{{ produto.quantidade }}</td>
+                                <td class="py-3 px-6 text-center text-gray-500">R$ {{ produto.preco_custo }}</td>
+                                <td class="py-3 px-6 text-center text-blue-600 font-bold">R$ {{ produto.preco_venda }}</td>
+                                <td class="py-3 px-6 text-center">
+                                    <div class="flex flex-col">
+                                        <span class="text-green-600 font-bold">R$ {{ produto.lucro }}</span>
+                                        <span class="text-xs text-gray-400">({{ produto.margem }}%)</span>
+                                    </div>
+                                </td>
+                                <td class="py-3 px-6 text-center">
+                                    <div class="flex item-center justify-center gap-3">
+                                        <a href="{% url 'movimentar_produto' produto.id %}" class="text-blue-500 hover:text-blue-700 transform hover:scale-110" title="Movimentar"><i class="fas fa-exchange-alt"></i></a>
+                                        <a href="{% url 'historico_produto' produto.id %}" class="text-purple-500 hover:text-purple-700 transform hover:scale-110" title="Histórico"><i class="fas fa-history"></i></a>
+                                        <a href="{% url 'editar_produto' produto.id %}" class="text-yellow-500 hover:text-yellow-700 transform hover:scale-110" title="Editar"><i class="fas fa-edit"></i></a>
+                                        <a href="{% url 'deletar_produto' produto.id %}" onclick="return confirm('Excluir?')" class="text-red-500 hover:text-red-700 transform hover:scale-110" title="Excluir"><i class="fas fa-trash"></i></a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="8" class="text-center py-8 text-gray-500">
+                                    <i class="fas fa-box-open text-4xl mb-2 text-gray-300"></i><br>
+                                    Nenhum produto encontrado.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
     </div>
 
     <script>
         const ctx = document.getElementById('chartCategoria').getContext('2d');
-        
         const labels = {{ cat_labels|safe }};
         const data = {{ cat_data|safe }};
 
@@ -207,30 +228,21 @@
             data: {
                 labels: labels,
                 datasets: [{
-                    label: 'Quantidade em Estoque',
+                    label: 'Qtd',
                     data: data,
-                    backgroundColor: [
-                        '#3B82F6', 
-                        '#10B981', 
-                        '#F59E0B', 
-                        '#EF4444', 
-                        '#8B5CF6', 
-                        '#6B7280'  
-                    ],
-                    hoverOffset: 4
+                    backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#6B7280'],
+                    borderWidth: 0,
+                    hoverOffset: 10
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: {
-                        position: 'bottom',
-                    }
+                    legend: { position: 'right', labels: { usePointStyle: true } }
                 }
             }
         });
     </script>
-    
 </body>
 </html>

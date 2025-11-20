@@ -122,3 +122,10 @@ def historico_produto(request, id):
 def detalhes_produto(request, id):
     produto = get_object_or_404(Produto, id=id)
     return render(request, 'estoque/detalhes_produto.html', {'produto': produto})
+
+
+@login_required
+def lista_movimentacoes(request):
+    movimentacoes = Movimentacao.objects.all().select_related(
+        'produto', 'usuario').order_by('-data')
+    return render(request, 'estoque/lista_movimentacoes.html', {'movimentacoes': movimentacoes})
