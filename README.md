@@ -9,8 +9,9 @@ Um sistema web completo para controle de estoque de pequenas empresas, focado em
 
 ## 📸 Screenshots
 
-![Dashboard Preview](https://via.placeholder.com/800x400?text=Dashboard+do+Sistema)
-*(Substitua este link por uma imagem real da sua Dashboard)*
+<img width="1919" height="988" alt="Screenshot_2" src="https://github.com/user-attachments/assets/92a0b900-2868-444e-9d10-acea74bbd089" />
+<img width="1918" height="914" alt="Screenshot_1" src="https://github.com/user-attachments/assets/fe665afe-558d-44a8-83a0-bb58026b801e" />
+
 
 ## 🚀 Funcionalidades
 
