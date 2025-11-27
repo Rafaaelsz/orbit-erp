@@ -7,6 +7,7 @@ from xhtml2pdf import pisa
 from .models import Produto, Movimentacao, Categoria
 from .forms import ProdutoForm, MovimentacaoForm, CategoriaForm
 from django.contrib import messages
+import csv
 
 
 @login_required
@@ -187,3 +188,27 @@ def deletar_categoria(request, id):
     categoria.delete()
     messages.success(request, 'Categoria excluída com sucesso!')
     return redirect('lista_categorias')
+
+
+@login_required
+def exportar_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="estoque.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['Produto', 'Categoria', 'Quantidade',
+                    'Preço Custo', 'Preço Venda', 'Lucro (R$)', 'Margem (%)'])
+    produtos = Produto.objects.all().order_by('nome')
+
+    for produto in produtos:
+        writer.writerow([
+            produto.nome,
+            produto.categoria.nome if produto.categoria else 'Sem Categoria',
+            produto.quantidade,
+            produto.preco_custo,
+            produto.preco_venda,
+            produto.lucro,
+            produto.margem,
+        ])
+
+    return response

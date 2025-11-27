@@ -45,14 +45,24 @@
                 <canvas id="chartCategoria"></canvas>
             </div>
         </div>
+        
+        <!-- CARD DE RESUMO COM BOTÕES -->
         <div class="bg-white rounded-lg shadow p-6 flex flex-col justify-center items-center text-center">
             <h3 class="text-gray-700 text-lg font-bold mb-2">Resumo</h3>
             <p class="text-gray-500">Valor total acumulado:</p>
             <p class="text-4xl font-bold text-green-600 mt-2">R$ {{ valor_estoque }}</p>
-            <!-- Botão PDF -->
-            <a href="{% url 'relatorio_pdf' %}" target="_blank" class="mt-6 px-6 py-2 bg-gray-800 text-white rounded hover:bg-gray-700 transition flex items-center gap-2">
-                <i class="fas fa-file-pdf"></i> Relatório PDF
-            </a>
+            
+            <div class="mt-6 flex flex-col gap-3 w-full max-w-xs">
+                <!-- Botão PDF -->
+                <a href="{% url 'relatorio_pdf' %}" target="_blank" class="w-full px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition flex items-center justify-center gap-2 text-sm font-bold shadow">
+                    <i class="fas fa-file-pdf"></i> Relatório PDF
+                </a>
+
+                <!-- NOVO: Botão Excel -->
+                <a href="{% url 'exportar_csv' %}" class="w-full px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded transition flex items-center justify-center gap-2 text-sm font-bold shadow">
+                    <i class="fas fa-file-csv"></i> Exportar Excel
+                </a>
+            </div>
         </div>
     </div>
 
@@ -65,7 +75,7 @@
         <div class="flex gap-2 w-full md:w-auto">
             <form method="get" class="flex gap-2 w-full md:w-auto">
                 <input type="text" name="q" value="{{ query }}" placeholder="Buscar..." 
-                       class="border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm">
+                       class="border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm w-full">
                 <button type="submit" class="bg-gray-800 hover:bg-gray-900 text-white px-4 py-2 rounded-lg">
                     <i class="fas fa-search"></i>
                 </button>
@@ -73,7 +83,7 @@
                 <a href="{% url 'dashboard' %}" class="bg-red-500 text-white px-4 py-2 rounded-lg flex items-center"><i class="fas fa-times"></i></a>
                 {% endif %}
             </form>
-            <a href="{% url 'adicionar_produto' %}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg flex items-center gap-2 text-sm">
+            <a href="{% url 'adicionar_produto' %}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg flex items-center gap-2 text-sm whitespace-nowrap">
                 <i class="fas fa-plus"></i> Novo
             </a>
         </div>
@@ -123,7 +133,6 @@
                             <a href="{% url 'movimentar_produto' produto.id %}" class="text-blue-500 hover:text-blue-700 transform hover:scale-110" title="Movimentar"><i class="fas fa-exchange-alt"></i></a>
                             <a href="{% url 'historico_produto' produto.id %}" class="text-purple-500 hover:text-purple-700 transform hover:scale-110" title="Histórico"><i class="fas fa-history"></i></a>
                             <a href="{% url 'editar_produto' produto.id %}" class="text-yellow-500 hover:text-yellow-700 transform hover:scale-110" title="Editar"><i class="fas fa-edit"></i></a>
-                            <!-- Botão Deletar (usa a função do SweetAlert) -->
                             <button type="button" onclick="confirmarExclusao('{{ produto.id }}', '{{ produto.nome }}')" class="text-red-500 hover:text-red-600 transform hover:scale-110" title="Excluir">
                                 <i class="fas fa-trash"></i>
                             </button>

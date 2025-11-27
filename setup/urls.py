@@ -27,6 +27,7 @@ urlpatterns = [
          views.editar_categoria, name='editar_categoria'),
     path('categorias/deletar/<int:id>/',
          views.deletar_categoria, name='deletar_categoria'),
+    path('exportar-csv/', views.exportar_csv, name='exportar_csv'),
 ]
 
 if settings.DEBUG:
